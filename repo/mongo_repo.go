@@ -9,12 +9,12 @@ import (
 )
 
 type MongoRepository struct {
-	db *mongo.Database
+	*mongo.Database
 }
 
 func NewMongoRepository(db *mongo.Database) *MongoRepository {
 	return &MongoRepository{
-		db: db,
+		db,
 	}
 }
 

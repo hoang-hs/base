@@ -8,12 +8,12 @@ import (
 )
 
 type GormRepository struct {
-	db *gorm.DB
+	*gorm.DB
 }
 
 func NewGormRepository(db *gorm.DB) *GormRepository {
 	return &GormRepository{
-		db: db,
+		db,
 	}
 }
 
@@ -25,5 +25,5 @@ func (b *GormRepository) ReturnError(ctx context.Context, err error) *base.Error
 }
 
 func (b *GormRepository) Paging(page *base.Page) *gorm.DB {
-	return b.db.Offset(page.GetOffset()).Limit(page.GetLimit())
+	return b.Offset(page.GetOffset()).Limit(page.GetLimit())
 }
