@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = ".;pb";
+
+message LoginInfo {
+  string username = 1;
+  string password = 2;
+}
+
+message PageReq {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message MetaRecord {
+  int32 number_record = 1;
+  int32 limit = 2;
+  string next_query = 3;
+  string prev_query = 4;
+}
+
+message GetById {
+  int64 id = 1;
+}
+
+message GetByIdsReq {
+  repeated int64 ids = 1;
+}
+
+message Empty {
+
+}
