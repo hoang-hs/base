@@ -4,3 +4,6 @@ proto:
 
 tidy:
 	go mod tidy
+
+tag:
+	git push --tags
