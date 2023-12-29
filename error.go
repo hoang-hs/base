@@ -91,7 +91,10 @@ var (
 		}
 	}
 
-	ErrNotFound = func(ctx context.Context, object, status string) *Error {
+	ErrNotFound = func(ctx context.Context, object string) *Error {
+		if object == "" {
+			object = "object"
+		}
 		return &Error{
 			Code:       ErrorCodeNotFound,
 			Message:    fmt.Sprintf("%s %s", object, "not found"),
