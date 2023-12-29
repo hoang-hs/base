@@ -11,7 +11,7 @@ func SetLimitDefault(limit uint32) {
 	LimitDefault = limit
 }
 
-func (p *Page) SetDefault() {
+func (p *Page) setDefault() {
 	if p == nil {
 		return
 	}
@@ -24,9 +24,15 @@ func (p *Page) SetDefault() {
 }
 
 func (p *Page) GetOffset() int {
+	if p == nil || p.Page == 0 {
+		p.setDefault()
+	}
 	return int((p.Page - 1) * p.Limit)
 }
 
 func (p *Page) GetLimit() int {
+	if p == nil || p.Limit == 0 {
+		p.setDefault()
+	}
 	return int(p.Limit)
 }
