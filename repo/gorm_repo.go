@@ -17,9 +17,9 @@ func NewGormRepository(db *gorm.DB) *GormRepository {
 	}
 }
 
-func (b *GormRepository) returnError(ctx context.Context, err error) *base.Error {
+func (b *GormRepository) ReturnError(ctx context.Context, err error) *base.Error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return base.ErrNotFound(ctx, "")
+		return nil
 	}
 	return base.ErrSystemError(ctx, err.Error())
 }

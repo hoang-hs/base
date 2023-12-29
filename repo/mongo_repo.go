@@ -18,9 +18,9 @@ func NewMongoRepository(db *mongo.Database) *MongoRepository {
 	}
 }
 
-func (b *MongoRepository) returnError(ctx context.Context, err error) *base.Error {
+func (b *MongoRepository) ReturnError(ctx context.Context, err error) *base.Error {
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return base.ErrNotFound(ctx, "")
+		return nil
 	}
 	return base.ErrSystemError(ctx, err.Error())
 }
