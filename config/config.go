@@ -32,6 +32,10 @@ type Config struct {
 		Password string   `mapstructure:"password"`
 	} `mapstructure:"redis"`
 
+	Kafka struct {
+		Host string `mapstructure:"host"`
+	}
+
 	Tracer struct {
 		Enabled bool `mapstructure:"enabled"`
 		Jaeger  struct {
@@ -39,10 +43,4 @@ type Config struct {
 			Active   bool   `mapstructure:"active"`
 		} `mapstructure:"jaeger"`
 	} `mapstructure:"tracer"`
-}
-
-var config *Config
-
-func Get() *Config {
-	return config
 }

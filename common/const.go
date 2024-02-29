@@ -9,6 +9,15 @@ const (
 	TraceIdName = "trace_id"
 )
 
-func IsProdEnv() bool {
-	return config.Get().Mode == AppEnvProd
+var IsProdEnv bool
+
+func SetMode(cf *config.Config) {
+	switch cf.Mode {
+	case AppEnvProd:
+		IsProdEnv = true
+	case AppEnvDev:
+		IsProdEnv = false
+	default:
+		panic("mode invalid")
+	}
 }

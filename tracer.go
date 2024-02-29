@@ -14,8 +14,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func InitTracer(lc fx.Lifecycle) {
-	cf := config.Get()
+func InitTracer(lc fx.Lifecycle, cf *config.Config) {
 	if !cf.Tracer.Enabled {
 		return
 	}

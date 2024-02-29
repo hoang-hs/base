@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -27,12 +26,12 @@ func BuildStorageModules() fx.Option {
 	)
 }
 
-func newPostgresqlDB(lc fx.Lifecycle, log *zap.SugaredLogger) *gorm.DB {
-	cf := config.Get().Postgresql
-	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", cf.Host,
-		cf.Port, cf.User, cf.DbName, cf.SslMode, cf.Password)
+func newPostgresqlDB(lc fx.Lifecycle, config *config.Config) *gorm.DB {
+	cfPostgresql := config.Postgresql
+	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", cfPostgresql.Host,
+		cfPostgresql.Port, cfPostgresql.User, cfPostgresql.DbName, cfPostgresql.SslMode, cfPostgresql.Password)
 	logMode := logger.Info
-	if common.IsProdEnv() {
+	if common.IsProdEnv {
 		logMode = logger.Silent
 	}
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -41,7 +40,7 @@ func newPostgresqlDB(lc fx.Lifecycle, log *zap.SugaredLogger) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	if config.Get().Tracer.Enabled {
+	if config.Tracer.Enabled {
 		if err := db.Use(otelgorm.NewPlugin()); err != nil {
 			panic(err)
 		}
@@ -59,8 +58,8 @@ func newPostgresqlDB(lc fx.Lifecycle, log *zap.SugaredLogger) *gorm.DB {
 	return db
 }
 
-func newCacheRedis() redis.UniversalClient {
-	cf := config.Get().Redis
+func newCacheRedis(config *config.Config) redis.UniversalClient {
+	cf := config.Redis
 	hosts := cf.Hosts
 	var client redis.UniversalClient
 	isClusterMode := len(hosts) > 1
@@ -85,26 +84,25 @@ func newCacheRedis() redis.UniversalClient {
 	return client
 }
 
-func newMongoDB(lc fx.Lifecycle, logger *zap.SugaredLogger) *mongo.Database {
-	logger.Debugf("Coming Create Storage")
-	cf := config.Get()
+func newMongoDB(lc fx.Lifecycle, cf *config.Config) *mongo.Database {
+	log.Debug("Coming Create Storage")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	opts := options.ClientOptions{}
-	if config.Get().Tracer.Enabled {
+	if cf.Tracer.Enabled {
 		opts.Monitor = otelmongo.NewMonitor()
 	}
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cf.Mongo.Uri), &opts)
 	if err != nil {
-		logger.Fatalf("connect mongo db error:[%s]", err.Error())
+		log.Fatal("connect mongo db error:[%s]", err.Error())
 	}
 	if err = client.Ping(context.Background(), nil); err != nil {
-		logger.Fatalf("ping mongo db error:[%s]", err.Error())
+		log.Fatal("ping mongo db error:[%s]", err.Error())
 	}
 	db := client.Database(cf.Mongo.DB)
 	lc.Append(fx.Hook{
 		OnStop: func(ctx context.Context) error {
-			logger.Info("Coming OnStop Storage")
+			log.Info("Coming OnStop Storage")
 			return client.Disconnect(ctx)
 		},
 	})

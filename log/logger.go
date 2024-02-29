@@ -21,7 +21,7 @@ func CustomLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) 
 	enc.AppendString("[" + level.CapitalString() + "]")
 }
 
-func init() {
+func NewLogger() {
 	encoderConfig := zapcore.EncoderConfig{
 		MessageKey:   "message",
 		LevelKey:     "level",
