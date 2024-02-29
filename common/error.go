@@ -1,9 +1,10 @@
-package base
+package common
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/hoang-hs/base"
 	"net/http"
 	"time"
 )
@@ -86,7 +87,7 @@ var (
 		return &Error{
 			Code:       ErrorCodeUnauthorized,
 			Message:    DefaultUnauthorizedMessage,
-			TraceID:    GetTraceId(ctx),
+			TraceID:    base.GetTraceId(ctx),
 			HTTPStatus: http.StatusUnauthorized,
 		}
 	}
@@ -98,7 +99,7 @@ var (
 		return &Error{
 			Code:       ErrorCodeNotFound,
 			Message:    fmt.Sprintf("%s %s", object, "not found"),
-			TraceID:    GetTraceId(ctx),
+			TraceID:    base.GetTraceId(ctx),
 			HTTPStatus: http.StatusNotFound,
 		}
 	}
@@ -107,7 +108,7 @@ var (
 		return &Error{
 			Code:       ErrorCodeBadRequest,
 			Message:    DefaultBadRequestMessage,
-			TraceID:    GetTraceId(ctx),
+			TraceID:    base.GetTraceId(ctx),
 			HTTPStatus: http.StatusBadRequest,
 		}
 	}
@@ -118,7 +119,7 @@ var (
 		return &Error{
 			Code:       ErrorCodeSystemError,
 			Message:    DefaultServerErrorMessage,
-			TraceID:    GetTraceId(ctx),
+			TraceID:    base.GetTraceId(ctx),
 			HTTPStatus: http.StatusInternalServerError,
 			Detail:     detail,
 		}
@@ -128,7 +129,7 @@ var (
 		return &Error{
 			Code:       ErrorCodeForbidden,
 			Message:    DefaultForbiddenMessage,
-			TraceID:    GetTraceId(ctx),
+			TraceID:    base.GetTraceId(ctx),
 			HTTPStatus: http.StatusForbidden,
 		}
 	}

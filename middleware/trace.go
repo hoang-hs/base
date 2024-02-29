@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/hoang-hs/base"
+	"github.com/hoang-hs/base/common"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/metadata"
 	"math/rand"
@@ -24,9 +24,9 @@ func Tracer() gin.HandlerFunc {
 			rand.Read(traceIdByte)
 			traceId = hex.EncodeToString(traceIdByte[:])
 		}
-		c.Set(base.TraceIdName, traceId)
-		traceContext := context.WithValue(c.Request.Context(), base.TraceIdName, traceId)
-		ctxMetaData := metadata.AppendToOutgoingContext(traceContext, []string{base.TraceIdName, traceId}...)
+		c.Set(common.TraceIdName, traceId)
+		traceContext := context.WithValue(c.Request.Context(), common.TraceIdName, traceId)
+		ctxMetaData := metadata.AppendToOutgoingContext(traceContext, []string{common.TraceIdName, traceId}...)
 		c.Request = c.Request.WithContext(ctxMetaData)
 		c.Next()
 	}

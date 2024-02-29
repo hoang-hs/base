@@ -3,7 +3,8 @@ package repo
 import (
 	"context"
 	"errors"
-	"github.com/hoang-hs/base"
+	"github.com/hoang-hs/base/common"
+	"github.com/hoang-hs/base/page"
 	"gorm.io/gorm"
 )
 
@@ -17,13 +18,13 @@ func NewGormRepository(db *gorm.DB) *GormRepository {
 	}
 }
 
-func (b *GormRepository) ReturnError(ctx context.Context, err error) *base.Error {
+func (b *GormRepository) ReturnError(ctx context.Context, err error) *common.Error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
-	return base.ErrSystemError(ctx, err.Error())
+	return common.ErrSystemError(ctx, err.Error())
 }
 
-func (b *GormRepository) Paging(page *base.Page) *gorm.DB {
+func (b *GormRepository) Paging(page *page.Page) *gorm.DB {
 	return b.Offset(page.GetOffset()).Limit(page.GetLimit())
 }

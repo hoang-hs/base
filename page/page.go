@@ -1,4 +1,4 @@
-package base
+package page
 
 type Page struct {
 	Page  uint32 `form:"page" json:"page"`

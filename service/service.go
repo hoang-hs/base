@@ -1,10 +1,11 @@
-package base
+package service
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/hoang-hs/base/common"
 	"github.com/hoang-hs/base/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -34,16 +35,16 @@ func (b *Service) connectGrpc(domain string) *grpc.ClientConn {
 	return conn
 }
 
-func (b *Service) grpToIError(ctx context.Context, inputErr error) *Error {
-	var ierr Error
+func (b *Service) grpToIError(ctx context.Context, inputErr error) *common.Error {
+	var ierr common.Error
 	grpcErr, ok := status.FromError(inputErr)
 	if !ok {
-		return ErrSystemError(ctx, fmt.Sprintf("grpc error convert failed, err:[%s]", inputErr.Error()))
+		return common.ErrSystemError(ctx, fmt.Sprintf("grpc error convert failed, err:[%s]", inputErr.Error()))
 	}
 
 	err := json.Unmarshal([]byte(grpcErr.Message()), &ierr)
 	if err != nil {
-		return ErrSystemError(ctx, fmt.Sprintf("grpc error unmarshal failed with input [%s]", inputErr.Error()))
+		return common.ErrSystemError(ctx, fmt.Sprintf("grpc error unmarshal failed with input [%s]", inputErr.Error()))
 	}
 
 	return &ierr

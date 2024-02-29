@@ -1,4 +1,6 @@
-package base
+package common
+
+import "github.com/hoang-hs/base/config"
 
 const (
 	AppEnvDev  = "dev"
@@ -8,5 +10,5 @@ const (
 )
 
 func IsProdEnv() bool {
-	return Get().Mode == AppEnvProd
+	return config.Get().Mode == AppEnvProd
 }

@@ -2,6 +2,8 @@ package base
 
 import (
 	"context"
+	"github.com/hoang-hs/base/common"
+	"github.com/hoang-hs/base/config"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -13,7 +15,7 @@ import (
 )
 
 func InitTracer(lc fx.Lifecycle) {
-	cf := Get()
+	cf := config.Get()
 	if !cf.Tracer.Enabled {
 		return
 	}
@@ -21,7 +23,7 @@ func InitTracer(lc fx.Lifecycle) {
 		resource.Default(),
 		resource.NewWithAttributes(
 			"",
-			semconv.ServiceName(cf.Name),
+			semconv.ServiceName(cf.Server.Name),
 			semconv.ServiceVersion("v0.1.0"),
 			attribute.String("environment", cf.Mode),
 		),
@@ -53,8 +55,8 @@ func GetTraceId(ctx context.Context) string {
 		return ""
 	}
 	traceId := ""
-	if ctx.Value(TraceIdName) != nil {
-		traceId = ctx.Value(TraceIdName).(string)
+	if ctx.Value(common.TraceIdName) != nil {
+		traceId = ctx.Value(common.TraceIdName).(string)
 	}
 	return traceId
 }

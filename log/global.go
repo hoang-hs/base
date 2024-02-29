@@ -8,20 +8,40 @@ import (
 
 var globalLogger *logger
 
-func Info(ctx context.Context, msg string, args ...interface{}) {
+func InfoCtx(ctx context.Context, msg string, args ...interface{}) {
 	globalLogger.Info(addCtxValue(ctx, msg), args...)
 }
 
-func Debug(ctx context.Context, msg string, args ...interface{}) {
+func Info(msg string, args ...interface{}) {
+	globalLogger.Info(msg, args...)
+}
+
+func DebugCtx(ctx context.Context, msg string, args ...interface{}) {
 	globalLogger.Debug(addCtxValue(ctx, msg), args...)
 }
 
-func Warn(ctx context.Context, msg string, args ...interface{}) {
+func Debug(msg string, args ...interface{}) {
+	globalLogger.Debug(msg, args...)
+}
+
+func WarnCtx(ctx context.Context, msg string, args ...interface{}) {
 	globalLogger.Warn(addCtxValue(ctx, msg), args...)
 }
 
-func Error(ctx context.Context, msg string, args ...interface{}) {
+func Warn(msg string, args ...interface{}) {
+	globalLogger.Warn(msg, args...)
+}
+
+func ErrorCtx(ctx context.Context, msg string, args ...interface{}) {
 	globalLogger.Error(addCtxValue(ctx, msg), args...)
+}
+
+func Error(msg string, args ...interface{}) {
+	globalLogger.Error(msg, args...)
+}
+
+func FatalCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Fatal(addCtxValue(ctx, msg), args...)
 }
 
 func Fatal(msg string, args ...interface{}) {

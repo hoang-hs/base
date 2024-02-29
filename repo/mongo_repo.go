@@ -3,7 +3,8 @@ package repo
 import (
 	"context"
 	"errors"
-	"github.com/hoang-hs/base"
+	"github.com/hoang-hs/base/common"
+	"github.com/hoang-hs/base/page"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -18,14 +19,14 @@ func NewMongoRepository(db *mongo.Database) *MongoRepository {
 	}
 }
 
-func (b *MongoRepository) ReturnError(ctx context.Context, err error) *base.Error {
+func (b *MongoRepository) ReturnError(ctx context.Context, err error) *common.Error {
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return nil
 	}
-	return base.ErrSystemError(ctx, err.Error())
+	return common.ErrSystemError(ctx, err.Error())
 }
 
-func (b *MongoRepository) Paging(page *base.Page) *options.FindOptions {
+func (b *MongoRepository) Paging(page *page.Page) *options.FindOptions {
 	opts := options.FindOptions{}
 	if page != nil {
 		opts.SetSkip(int64(page.GetOffset())).SetLimit(int64(page.GetLimit()))
