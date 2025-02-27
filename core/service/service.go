@@ -30,7 +30,7 @@ func (b *Service) connectGrpc(domain string) *grpc.ClientConn {
 		),
 	)
 	if err != nil {
-		log.Fatal("connect grpc error, domain:[%s], err:[%s]", domain, err.Error())
+		log.Fatal("connect grpc error", log.String("domain", domain), log.Err(err))
 	}
 	return conn
 }

@@ -8,7 +8,8 @@ import (
 func Log() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
-		log.InfoCtx(c.Request.Context(), "path: [%v], status: [%v], method: [%v], user_agent: [%v]",
-			c.Request.URL.Path, c.Writer.Status(), c.Request.Method, c.Request.UserAgent())
+		log.InfoCtx(c.Request.Context(), "received request", log.String("request", c.Request.URL.Path), log.String("method", c.Request.Method),
+			log.Int("status", c.Writer.Status()), log.String("user_agent", c.Request.UserAgent()),
+		)
 	}
 }

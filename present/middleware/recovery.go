@@ -15,8 +15,8 @@ func Recovery() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
-				log.ErrorCtx(c, "[Recovery from panic]\ntime: [%v]\nerror: [%v] \nrequest: [%v]\nstack: [%v]\n",
-					time.Now(), err, string(httpRequest), string(debug.Stack()))
+				log.ErrorCtx(c.Request.Context(), "Recovery from panic", log.String("time", time.Now().String()),
+					log.Any("err", err), log.String("request", string(httpRequest)), log.String("stack", string(debug.Stack())))
 				e := common.ErrSystemError(c, fmt.Sprintf("recovery, err:[%s]", err))
 				c.JSON(e.GetHttpStatus(), e)
 				c.Abort()

@@ -4,48 +4,91 @@ import (
 	"context"
 	"fmt"
 	"github.com/hoang-hs/base/common"
+	"go.uber.org/zap"
 )
 
 var globalLogger *logger
 
-func InfoCtx(ctx context.Context, msg string, args ...interface{}) {
-	globalLogger.Info(addCtxValue(ctx, msg), args...)
+// log format
+func InfofCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Infof(addCtxValue(ctx, msg), args...)
 }
 
-func Info(msg string, args ...interface{}) {
-	globalLogger.Info(msg, args...)
+func Infof(msg string, args ...interface{}) {
+	globalLogger.Infof(msg, args...)
 }
 
-func DebugCtx(ctx context.Context, msg string, args ...interface{}) {
-	globalLogger.Debug(addCtxValue(ctx, msg), args...)
+func DebugfCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Debugf(addCtxValue(ctx, msg), args...)
 }
 
-func Debug(msg string, args ...interface{}) {
-	globalLogger.Debug(msg, args...)
+func Debugf(msg string, args ...interface{}) {
+	globalLogger.Debugf(msg, args...)
 }
 
-func WarnCtx(ctx context.Context, msg string, args ...interface{}) {
-	globalLogger.Warn(addCtxValue(ctx, msg), args...)
+func WarnfCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Warnf(addCtxValue(ctx, msg), args...)
 }
 
-func Warn(msg string, args ...interface{}) {
-	globalLogger.Warn(msg, args...)
+func Warnf(msg string, args ...interface{}) {
+	globalLogger.Warnf(msg, args...)
 }
 
-func ErrorCtx(ctx context.Context, msg string, args ...interface{}) {
-	globalLogger.Error(addCtxValue(ctx, msg), args...)
+func ErrorfCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Errorf(addCtxValue(ctx, msg), args...)
 }
 
-func Error(msg string, args ...interface{}) {
-	globalLogger.Error(msg, args...)
+func Errorf(msg string, args ...interface{}) {
+	globalLogger.Errorf(msg, args...)
 }
 
-func FatalCtx(ctx context.Context, msg string, args ...interface{}) {
-	globalLogger.Fatal(addCtxValue(ctx, msg), args...)
+func FatalfCtx(ctx context.Context, msg string, args ...interface{}) {
+	globalLogger.Fatalf(addCtxValue(ctx, msg), args...)
 }
 
-func Fatal(msg string, args ...interface{}) {
-	globalLogger.Fatal(msg, args...)
+func Fatalf(msg string, args ...interface{}) {
+	globalLogger.Fatalf(msg, args...)
+}
+
+// log fields
+func InfoCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	globalLogger.Info(addCtxValue(ctx, msg), fields...)
+}
+
+func Info(msg string, fields ...zap.Field) {
+	globalLogger.Info(msg, fields...)
+}
+
+func DebugCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	globalLogger.Debug(addCtxValue(ctx, msg), fields...)
+}
+
+func Debug(msg string, fields ...zap.Field) {
+	globalLogger.Debug(msg, fields...)
+}
+
+func WarnCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	globalLogger.Warn(addCtxValue(ctx, msg), fields...)
+}
+
+func Warn(msg string, fields ...zap.Field) {
+	globalLogger.Warn(msg, fields...)
+}
+
+func ErrorCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	globalLogger.Error(addCtxValue(ctx, msg), fields...)
+}
+
+func Error(msg string, fields ...zap.Field) {
+	globalLogger.Error(msg, fields...)
+}
+
+func FatalCtx(ctx context.Context, msg string, fields ...zap.Field) {
+	globalLogger.Fatal(addCtxValue(ctx, msg), fields...)
+}
+
+func Fatal(msg string, fields ...zap.Field) {
+	globalLogger.Fatal(msg, fields...)
 }
 
 func GetLogger() *logger {

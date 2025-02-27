@@ -79,7 +79,7 @@ func newCacheRedis(config *configs.Config) redis.UniversalClient {
 
 	err := client.Ping(context.Background()).Err()
 	if err != nil {
-		log.GetLogger().GetZap().Fatalf("ping redis error, err:[%s]", err.Error())
+		log.Fatal("ping redis error", log.Err(err))
 	}
 	return client
 }
@@ -94,10 +94,10 @@ func newMongoDB(lc fx.Lifecycle, cf *configs.Config) *mongo.Database {
 	}
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cf.Mongo.Uri), &opts)
 	if err != nil {
-		log.Fatal("connect mongo db error:[%s]", err.Error())
+		log.Fatal("connect mongo db", log.Err(err))
 	}
 	if err = client.Ping(context.Background(), nil); err != nil {
-		log.Fatal("ping mongo db error:[%s]", err.Error())
+		log.Fatal("ping mongo db", log.Err(err))
 	}
 	db := client.Database(cf.Mongo.DB)
 	lc.Append(fx.Hook{

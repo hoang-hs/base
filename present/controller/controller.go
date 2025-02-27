@@ -32,11 +32,11 @@ func (b *Controller) ErrorData(c *gin.Context, err *errorCustom.Error) {
 
 func (b *Controller) BindAndValidateRequest(c *gin.Context, req interface{}) *errorCustom.Error {
 	if err := c.BindUri(req); err != nil {
-		log.WarnCtx(c, "bind request err, err:[%s]", err)
+		log.WarnCtx(c, "bind request err", log.Err(err))
 		return errorCustom.ErrBadRequest(c).SetDetail(err.Error())
 	}
 	if err := c.Bind(req); err != nil {
-		log.WarnCtx(c, "bind request err, err:[%s]", err)
+		log.WarnCtx(c, "bind request err", log.Err(err))
 		return errorCustom.ErrBadRequest(c).SetDetail(err.Error())
 	}
 	return b.ValidateRequest(c, req)
@@ -48,16 +48,16 @@ func (b *Controller) ValidateRequest(ctx context.Context, req interface{}) *erro
 	if err != nil {
 		var errs validator.ValidationErrors
 		if !errors.As(err, &errs) {
-			log.ErrorCtx(ctx, "Cannot parse validate error: %+v", err)
+			log.ErrorCtx(ctx, "Cannot parse validate", log.Err(err))
 			return errorCustom.ErrSystemError(ctx, "ValidateFailed").SetDetail(err.Error())
 		}
 		var filedErrors []string
 		for _, errValidate := range errs {
-			log.DebugCtx(ctx, "field invalid, err:[%s]", errValidate.Field())
+			log.DebugCtx(ctx, "field invalid", log.String("err", errValidate.Field()))
 			filedErrors = append(filedErrors, errValidate.Error())
 		}
 		str := strings.Join(filedErrors, ",")
-		log.WarnCtx(ctx, "invalid request, err:[%s]", err.Error())
+		log.WarnCtx(ctx, "invalid request", log.Err(err))
 		return errorCustom.ErrBadRequest(ctx).SetDetail(fmt.Sprintf("field invalidate [%s]", str))
 	}
 	return nil
