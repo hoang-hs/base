@@ -1,0 +1,29 @@
+stages:
+  - build
+  - deploy
+
+variables:
+    DOCKER_REGISTRY: docker.io
+    RELEASE_NAME: doan-api
+
+build:
+  stage: build
+  script:
+    - sudo docker build . -t $DOCKER_IMAGE
+    - sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+    - sudo docker push $DOCKER_IMAGE
+  only:
+    - main
+  tags:
+    - h-runner
+
+deploy:
+    stage: deploy
+    script:
+      - mkdir -p ~/.kube
+      - echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG
+      - helm upgrade --install $RELEASE_NAME ./helm-chart --set image.repository=$DOCKER_IMAGE
+    only:
+        - main
+    tags:
+        - h-runner

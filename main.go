@@ -4,11 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/hoang-hs/base/bootstrap"
-	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/common/log"
-	"github.com/hoang-hs/base/configs"
-	"github.com/hoang-hs/base/pkg"
+	bootstrap2 "github.com/hoang-hs/base/src/bootstrap"
+	"github.com/hoang-hs/base/src/common"
+	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/configs"
+	"github.com/hoang-hs/base/src/pkg"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"os"
@@ -32,30 +32,30 @@ func init() {
 	if !common.IsProdEnv {
 		fmt.Println(configs.Get())
 	}
-	log.NewLogger()
+	log2.NewLogger()
 }
 
 func main() {
-	logger := log.GetLogger().GetZap()
+	logger := log2.GetLogger().GetZap()
 	logger.Debugf("App %s is running", configs.Get().Mode)
 	app := fx.New(
-		fx.Provide(log.GetLogger().GetZap),
+		fx.Provide(log2.GetLogger().GetZap),
 		fx.Invoke(pkg.InitTracer),
 
 		// storage module
-		bootstrap.BuildStorageModules(),
+		bootstrap2.BuildStorageModules(),
 
 		// build service module
-		bootstrap.BuildServicesModules(),
+		bootstrap2.BuildServicesModules(),
 
 		// build http server
-		bootstrap.BuildValidator(),
-		bootstrap.BuildControllerModule(),
+		bootstrap2.BuildValidator(),
+		bootstrap2.BuildControllerModule(),
 
 		// build consumer
-		bootstrap.BuildConsumerModule(),
+		bootstrap2.BuildConsumerModule(),
 
-		bootstrap.BuildHTTPServerModule(),
+		bootstrap2.BuildHTTPServerModule(),
 		// bootstrap.BuildGrpcModules(),
 	)
 
