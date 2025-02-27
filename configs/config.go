@@ -14,6 +14,9 @@ type Config struct {
 			Prefix  string `mapstructure:"prefix"`
 		} `mapstructure:"http"`
 	} `mapstructure:"server"`
+	Swagger struct {
+		Enabled bool `mapstructure:"enabled"`
+	} `mapstructure:"swagger"`
 
 	Postgresql struct {
 		Host        string `mapstructure:"host"`
@@ -36,10 +39,7 @@ type Config struct {
 		Password string   `mapstructure:"password"`
 	} `mapstructure:"redis"`
 
-	Kafka struct {
-		Host string `mapstructure:"host"`
-	}
-
+	Kafka  *Kafka `mapstructure:"kafka"`
 	Tracer struct {
 		Enabled bool `mapstructure:"enabled"`
 		Jaeger  struct {
@@ -47,6 +47,14 @@ type Config struct {
 			Active   bool   `mapstructure:"active"`
 		} `mapstructure:"jaeger"`
 	} `mapstructure:"tracer"`
+}
+
+type Kafka struct {
+	Host     string `mapstructure:"host"`
+	Consumer struct {
+		GroupID string `mapstructure:"group_id"`
+		Topic   string `mapstructure:"topic"`
+	} `mapstructure:"consumer"`
 }
 
 var common *Config

@@ -49,9 +49,13 @@ func main() {
 		bootstrap.BuildServicesModules(),
 
 		// build http server
+		bootstrap.BuildValidator(),
 		bootstrap.BuildControllerModule(),
 
-		// bootstrap.BuildHandlersModules(),
+		// build consumer
+		bootstrap.BuildConsumerModule(),
+
+		bootstrap.BuildHTTPServerModule(),
 		// bootstrap.BuildGrpcModules(),
 	)
 

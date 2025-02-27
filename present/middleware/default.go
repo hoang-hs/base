@@ -5,8 +5,7 @@ import (
 	"github.com/hoang-hs/base/configs"
 )
 
-func RegisterGinEngineDefault(cf *configs.Config) *gin.Engine {
-	engine := gin.New()
+func RegisterGinEngineDefault(cf *configs.Config, engine *gin.Engine) *gin.Engine {
 	engine.Use(Recovery())
 	engine.Use(Otel(cf.Server.Name))
 	engine.Use(Tracer())
