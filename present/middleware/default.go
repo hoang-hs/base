@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hoang-hs/base/config"
+	"github.com/hoang-hs/base/configs"
 )
 
-func RegisterGinEngineDefault(cf *config.Config) *gin.Engine {
+func RegisterGinEngineDefault(cf *configs.Config) *gin.Engine {
 	engine := gin.New()
 	engine.Use(Recovery())
 	engine.Use(Otel(cf.Server.Name))

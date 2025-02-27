@@ -1,6 +1,8 @@
 package common
 
-import "github.com/hoang-hs/base/config"
+import (
+	"github.com/hoang-hs/base/configs"
+)
 
 const (
 	AppEnvDev  = "dev"
@@ -11,7 +13,7 @@ const (
 
 var IsProdEnv bool
 
-func SetMode(cf *config.Config) {
+func SetMode(cf *configs.Config) {
 	switch cf.Mode {
 	case AppEnvProd:
 		IsProdEnv = true

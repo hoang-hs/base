@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hoang-hs/base/log"
+	"github.com/hoang-hs/base/common/log"
 )
 
 func Log() gin.HandlerFunc {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/page"
+	"github.com/hoang-hs/base/core/model"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -26,7 +26,7 @@ func (b *MongoRepository) ReturnError(ctx context.Context, err error) *common.Er
 	return common.ErrSystemError(ctx, err.Error())
 }
 
-func (b *MongoRepository) Paging(page *page.Page) *options.FindOptions {
+func (b *MongoRepository) Paging(page *model.Page) *options.FindOptions {
 	opts := options.FindOptions{}
 	if page != nil {
 		opts.SetSkip(int64(page.GetOffset())).SetLimit(int64(page.GetLimit()))

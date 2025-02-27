@@ -1,9 +1,8 @@
-package base
+package pkg
 
 import (
 	"context"
-	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/config"
+	"github.com/hoang-hs/base/configs"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -14,7 +13,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func InitTracer(lc fx.Lifecycle, cf *config.Config) {
+func InitTracer(lc fx.Lifecycle, cf *configs.Config) {
 	if !cf.Tracer.Enabled {
 		return
 	}
@@ -47,15 +46,4 @@ func InitTracer(lc fx.Lifecycle, cf *config.Config) {
 		},
 	})
 	return
-}
-
-func GetTraceId(ctx context.Context) string {
-	if ctx == nil {
-		return ""
-	}
-	traceId := ""
-	if ctx.Value(common.TraceIdName) != nil {
-		traceId = ctx.Value(common.TraceIdName).(string)
-	}
-	return traceId
 }
