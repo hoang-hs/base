@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	error2 "github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/log"
+	errorCustom "github.com/hoang-hs/base/common"
+	"github.com/hoang-hs/base/common/log"
 	"net/http"
 	"strings"
 )
@@ -26,30 +26,30 @@ func (b *Controller) Success(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, data)
 }
 
-func (b *Controller) ErrorData(c *gin.Context, err *error2.Error) {
+func (b *Controller) ErrorData(c *gin.Context, err *errorCustom.Error) {
 	c.JSON(err.GetHttpStatus(), err)
 }
 
-func (b *Controller) BindAndValidateRequest(c *gin.Context, req interface{}) *error2.Error {
+func (b *Controller) BindAndValidateRequest(c *gin.Context, req interface{}) *errorCustom.Error {
 	if err := c.BindUri(req); err != nil {
 		log.WarnCtx(c, "bind request err, err:[%s]", err)
-		return error2.ErrBadRequest(c).SetDetail(err.Error())
+		return errorCustom.ErrBadRequest(c).SetDetail(err.Error())
 	}
 	if err := c.Bind(req); err != nil {
 		log.WarnCtx(c, "bind request err, err:[%s]", err)
-		return error2.ErrBadRequest(c).SetDetail(err.Error())
+		return errorCustom.ErrBadRequest(c).SetDetail(err.Error())
 	}
 	return b.ValidateRequest(c, req)
 }
 
-func (b *Controller) ValidateRequest(ctx context.Context, req interface{}) *error2.Error {
+func (b *Controller) ValidateRequest(ctx context.Context, req interface{}) *errorCustom.Error {
 	err := b.validate.Struct(req)
 
 	if err != nil {
 		var errs validator.ValidationErrors
 		if !errors.As(err, &errs) {
 			log.ErrorCtx(ctx, "Cannot parse validate error: %+v", err)
-			return error2.ErrSystemError(ctx, "ValidateFailed").SetDetail(err.Error())
+			return errorCustom.ErrSystemError(ctx, "ValidateFailed").SetDetail(err.Error())
 		}
 		var filedErrors []string
 		for _, errValidate := range errs {
@@ -58,7 +58,7 @@ func (b *Controller) ValidateRequest(ctx context.Context, req interface{}) *erro
 		}
 		str := strings.Join(filedErrors, ",")
 		log.WarnCtx(ctx, "invalid request, err:[%s]", err.Error())
-		return error2.ErrBadRequest(ctx).SetDetail(fmt.Sprintf("field invalidate [%s]", str))
+		return errorCustom.ErrBadRequest(ctx).SetDetail(fmt.Sprintf("field invalidate [%s]", str))
 	}
 	return nil
 }

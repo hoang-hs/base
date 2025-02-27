@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/page"
+	"github.com/hoang-hs/base/core/model"
 	"gorm.io/gorm"
 )
 
@@ -25,6 +25,6 @@ func (b *GormRepository) ReturnError(ctx context.Context, err error) *common.Err
 	return common.ErrSystemError(ctx, err.Error())
 }
 
-func (b *GormRepository) Paging(page *page.Page) *gorm.DB {
+func (b *GormRepository) Paging(page *model.Page) *gorm.DB {
 	return b.Offset(page.GetOffset()).Limit(page.GetLimit())
 }

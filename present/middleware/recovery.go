@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/log"
+	"github.com/hoang-hs/base/common/log"
 	"net/http/httputil"
 	"runtime/debug"
 	"time"

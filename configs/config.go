@@ -1,4 +1,8 @@
-package config
+package configs
+
+import (
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	Mode string `mapstructure:"mode"`
@@ -43,4 +47,24 @@ type Config struct {
 			Active   bool   `mapstructure:"active"`
 		} `mapstructure:"jaeger"`
 	} `mapstructure:"tracer"`
+}
+
+var common *Config
+
+func Get() *Config {
+	return common
+}
+
+func LoadConfig(pathConfig string) error {
+	viper.SetConfigFile(pathConfig)
+	viper.AutomaticEnv()
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+
+	err = viper.Unmarshal(&common)
+
+	return nil
 }

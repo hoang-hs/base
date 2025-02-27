@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/config"
-	"github.com/hoang-hs/base/log"
+	"github.com/hoang-hs/base/common/log"
+	"github.com/hoang-hs/base/configs"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -26,7 +26,7 @@ func BuildStorageModules() fx.Option {
 	)
 }
 
-func newPostgresqlDB(lc fx.Lifecycle, config *config.Config) *gorm.DB {
+func newPostgresqlDB(lc fx.Lifecycle, config *configs.Config) *gorm.DB {
 	cfPostgresql := config.Postgresql
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", cfPostgresql.Host,
 		cfPostgresql.Port, cfPostgresql.User, cfPostgresql.DbName, cfPostgresql.SslMode, cfPostgresql.Password)
@@ -58,7 +58,7 @@ func newPostgresqlDB(lc fx.Lifecycle, config *config.Config) *gorm.DB {
 	return db
 }
 
-func newCacheRedis(config *config.Config) redis.UniversalClient {
+func newCacheRedis(config *configs.Config) redis.UniversalClient {
 	cf := config.Redis
 	hosts := cf.Hosts
 	var client redis.UniversalClient
@@ -84,7 +84,7 @@ func newCacheRedis(config *config.Config) redis.UniversalClient {
 	return client
 }
 
-func newMongoDB(lc fx.Lifecycle, cf *config.Config) *mongo.Database {
+func newMongoDB(lc fx.Lifecycle, cf *configs.Config) *mongo.Database {
 	log.Debug("Coming Create Storage")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

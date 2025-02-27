@@ -6,7 +6,7 @@ import (
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/hoang-hs/base/common"
-	"github.com/hoang-hs/base/log"
+	"github.com/hoang-hs/base/common/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

@@ -3,7 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
-	"github.com/hoang-hs/base"
+	"github.com/hoang-hs/base/common"
 )
 
 var globalLogger *logger
@@ -53,6 +53,6 @@ func GetLogger() *logger {
 }
 
 func addCtxValue(ctx context.Context, msg string) string {
-	traceId := base.GetTraceId(ctx)
+	traceId := common.GetTraceId(ctx)
 	return fmt.Sprintf("%s, trace_id:[%s]", msg, traceId)
 }
