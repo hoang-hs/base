@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Depado/ginprom"
 	"github.com/gin-gonic/gin"
+	"github.com/hoang-hs/base/src/common/log"
 	"github.com/hoang-hs/base/src/configs"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/prometheus"
@@ -17,7 +18,7 @@ func NewMetric(lc fx.Lifecycle, cfg *configs.Config, r *gin.Engine) {
 	}
 	otelPromExporter, err := prometheus.New()
 	if err != nil {
-		panic(err)
+		log.Fatal("create prometheus exporter", log.Err(err))
 	}
 	meterProvider := metric.NewMeterProvider(metric.WithReader(otelPromExporter))
 	otel.SetMeterProvider(meterProvider)

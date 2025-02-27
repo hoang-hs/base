@@ -38,11 +38,11 @@ func newPostgresqlDB(lc fx.Lifecycle, config *configs.Config) *gorm.DB {
 		Logger: logger.Default.LogMode(logMode),
 	})
 	if err != nil {
-		panic(err)
+		log.Fatal("connect postgresql", log.Err(err))
 	}
 	if config.Observe.Trace.Enabled {
-		if err := db.Use(otelgorm.NewPlugin()); err != nil {
-			panic(err)
+		if err = db.Use(otelgorm.NewPlugin()); err != nil {
+			log.Warn("use otelgorm plugin", log.Err(err))
 		}
 	}
 	lc.Append(fx.Hook{
