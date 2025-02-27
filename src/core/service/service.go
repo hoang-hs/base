@@ -6,7 +6,7 @@ import (
 	"fmt"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/hoang-hs/base/src/common"
-	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/common/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -30,7 +30,7 @@ func (b *Service) connectGrpc(domain string) *grpc.ClientConn {
 		),
 	)
 	if err != nil {
-		log2.Fatal("connect grpc error", log2.String("domain", domain), log2.Err(err))
+		log.Fatal("connect grpc error", log.String("domain", domain), log.Err(err))
 	}
 	return conn
 }

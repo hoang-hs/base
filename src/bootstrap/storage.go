@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/hoang-hs/base/src/common"
-	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/common/log"
 	"github.com/hoang-hs/base/src/configs"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -40,14 +40,14 @@ func newPostgresqlDB(lc fx.Lifecycle, config *configs.Config) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	if config.Tracer.Enabled {
+	if config.Observe.Trace.Enabled {
 		if err := db.Use(otelgorm.NewPlugin()); err != nil {
 			panic(err)
 		}
 	}
 	lc.Append(fx.Hook{
 		OnStop: func(ctx context.Context) error {
-			log2.Debug("Coming OnStop Storage")
+			log.Debug("Coming OnStop Storage")
 			sqlDB, err := db.DB()
 			if err != nil {
 				return err
@@ -79,30 +79,30 @@ func newCacheRedis(config *configs.Config) redis.UniversalClient {
 
 	err := client.Ping(context.Background()).Err()
 	if err != nil {
-		log2.Fatal("ping redis error", log2.Err(err))
+		log.Fatal("ping redis error", log.Err(err))
 	}
 	return client
 }
 
 func newMongoDB(lc fx.Lifecycle, cf *configs.Config) *mongo.Database {
-	log2.Debug("Coming Create Storage")
+	log.Debug("Coming Create Storage")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	opts := options.ClientOptions{}
-	if cf.Tracer.Enabled {
+	if cf.Observe.Trace.Enabled {
 		opts.Monitor = otelmongo.NewMonitor()
 	}
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cf.Mongo.Uri), &opts)
 	if err != nil {
-		log2.Fatal("connect mongo db", log2.Err(err))
+		log.Fatal("connect mongo db", log.Err(err))
 	}
 	if err = client.Ping(context.Background(), nil); err != nil {
-		log2.Fatal("ping mongo db", log2.Err(err))
+		log.Fatal("ping mongo db", log.Err(err))
 	}
 	db := client.Database(cf.Mongo.DB)
 	lc.Append(fx.Hook{
 		OnStop: func(ctx context.Context) error {
-			log2.Info("Coming OnStop Storage")
+			log.Info("Coming OnStop Storage")
 			return client.Disconnect(ctx)
 		},
 	})

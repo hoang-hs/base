@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/common/log"
 	"github.com/hoang-hs/base/src/pkg/alert"
 	"runtime"
 	"strings"
@@ -42,7 +42,7 @@ func (r *RecoveryInterceptor) Unary() connect.UnaryInterceptorFunc {
 				if errRecover := recover(); errRecover != nil {
 					text := fmt.Sprintf("[Panic]\ntime: [%s]\nerror: [%v] \nstack:\n%v \nrequest: [%v]",
 						time.Now().Format(time.RFC3339), errRecover, getCallers(4), req.Spec().Procedure)
-					log2.Error("panic", log2.String("error", text))
+					log.Error("panic", log.String("error", text))
 					r.sender.SendMessage(ctx, text)
 					err = connect.NewError(connect.CodeInternal, fmt.Errorf("%w: %v", ErrPanic, errRecover))
 				}
@@ -77,7 +77,7 @@ func (r ActivityRecoveryInbound) ExecuteActivity(ctx context.Context, in *interc
 			info := activity.GetInfo(ctx)
 			text := fmt.Sprintf("[Panic]\ntime: [%s]\nerror: [%v] \nstack:\n%v\nactivity: [%v]",
 				time.Now().Format(time.RFC3339), errRecover, getCallers(4), info.ActivityType.Name)
-			log2.Error("panic", log2.String("error", text))
+			log.Error("panic", log.String("error", text))
 			r.sender.SendMessage(ctx, text)
 			panic(errRecover)
 		}
@@ -89,7 +89,7 @@ func (r *RecoveryInterceptor) RecoveryConsumer(ctx context.Context, m *kafka.Mes
 	if errRecover := recover(); errRecover != nil {
 		text := fmt.Sprintf("[Panic]\ntime: [%s]\nerror: [%v] \nstack:\n%v\ntopic: [%s]\npartition: [%d]\noffset: [%v]",
 			time.Now().Format(time.RFC3339), errRecover, getCallers(4), *m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
-		log2.Error("panic", log2.String("error", text))
+		log.Error("panic", log.String("error", text))
 		r.sender.SendMessage(ctx, text)
 	}
 }

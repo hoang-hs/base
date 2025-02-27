@@ -39,14 +39,8 @@ type Config struct {
 		Password string   `mapstructure:"password"`
 	} `mapstructure:"redis"`
 
-	Kafka  *Kafka `mapstructure:"kafka"`
-	Tracer struct {
-		Enabled bool `mapstructure:"enabled"`
-		Jaeger  struct {
-			Endpoint string `mapstructure:"endpoint"`
-			Active   bool   `mapstructure:"active"`
-		} `mapstructure:"jaeger"`
-	} `mapstructure:"tracer"`
+	Kafka   *Kafka   `mapstructure:"kafka"`
+	Observe *Observe `mapstructure:"observe"`
 }
 
 type Kafka struct {
@@ -55,6 +49,20 @@ type Kafka struct {
 		GroupID string `mapstructure:"group_id"`
 		Topic   string `mapstructure:"topic"`
 	} `mapstructure:"consumer"`
+}
+
+type Observe struct {
+	Trace struct {
+		Enabled      bool `mapstructure:"enabled"`
+		OtlpExporter struct {
+			Endpoint string `mapstructure:"endpoint"`
+			Active   bool   `mapstructure:"active"`
+		} `mapstructure:"otlp_exporter"`
+		SampleRate float64 `mapstructure:"sample_rate"`
+	} `mapstructure:"trace"`
+	Metric struct {
+		Enabled bool `mapstructure:"enabled"`
+	} `mapstructure:"metric"`
 }
 
 var common *Config

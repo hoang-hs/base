@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/hoang-hs/base/src/common"
-	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/common/log"
 	"github.com/hoang-hs/base/src/configs"
 	"io"
 	"time"
@@ -30,11 +30,11 @@ func NewConsumer(
 		"enable.auto.commit": false,
 	})
 	if err != nil {
-		log2.Fatal("Failed to create new consumer", log2.Err(err))
+		log.Fatal("Failed to create new consumer", log.Err(err))
 	}
 	err = c.SubscribeTopics([]string{cf.Consumer.Topic}, nil)
 	if err != nil {
-		log2.Fatal("Failed to subscribe topic")
+		log.Fatal("Failed to subscribe topic")
 	}
 
 	return &Consumer{
@@ -63,7 +63,7 @@ func (c *Consumer) Run(ctx context.Context, handleMessage HandleFunc) {
 				m, err := c.consumer.ReadMessage(timeoutKafka)
 				defer func(m *kafka.Message) {
 					if r := recover(); r != nil {
-						log2.Error("Recovered from panic", log2.Any("panic", r))
+						log.Error("Recovered from panic", log.Any("panic", r))
 						if c.onRecover != nil {
 							c.onRecover(context.WithoutCancel(ctx), m)
 						}
@@ -73,15 +73,15 @@ func (c *Consumer) Run(ctx context.Context, handleMessage HandleFunc) {
 				case errors.Is(err, io.EOF):
 					return
 				case err != nil:
-					log2.Error("Failed to read message", log2.Err(err))
+					log.Error("Failed to read message", log.Err(err))
 					return
 				}
 				// process message
-				log2.Info("New message received", log2.String("topic", *m.TopicPartition.Topic),
-					log2.String("offset", m.TopicPartition.Offset.String()), log2.Int32("partition", m.TopicPartition.Partition))
+				log.Info("New message received", log.String("topic", *m.TopicPartition.Topic),
+					log.String("offset", m.TopicPartition.Offset.String()), log.Int32("partition", m.TopicPartition.Partition))
 				err = handleMessage(ctxMessage, m)
 				if err != nil {
-					log2.Error("Failed to handle message", log2.Err(err))
+					log.Error("Failed to handle message", log.Err(err))
 				}
 			}()
 		}

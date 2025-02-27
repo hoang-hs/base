@@ -3,7 +3,7 @@ package alert
 import (
 	"context"
 	"github.com/go-resty/resty/v2"
-	log2 "github.com/hoang-hs/base/src/common/log"
+	"github.com/hoang-hs/base/src/common/log"
 	"os"
 )
 
@@ -28,7 +28,7 @@ func NewTelegram() Sender {
 		telegramMessageThreadID = os.Getenv("TELEGRAM_MESSAGE_THREAD_ID")
 	)
 	if telegramToken == "" || telegramChatID == "" || telegramMessageThreadID == "" {
-		log2.Warn("Telegram token, chat id, or message thread is empty")
+		log.Warn("Telegram token, chat id, or message thread is empty")
 		return NewNoop()
 	}
 
@@ -49,11 +49,11 @@ func (a *Telegram) SendMessage(ctx context.Context, text string) {
 		SetHeader("Accept", "application/json").
 		Get(sendMessagePath)
 	if err != nil {
-		log2.Error("failed to send telegram bot", log2.Err(err))
+		log.Error("failed to send telegram bot", log.Err(err))
 		return
 	}
 	if resp.IsError() {
-		log2.Error("failed to send telegram bot", log2.String("resp", resp.String()))
+		log.Error("failed to send telegram bot", log.String("resp", resp.String()))
 	}
 }
 
@@ -64,5 +64,5 @@ func NewNoop() *Noop {
 type Noop struct{}
 
 func (a *Noop) SendMessage(_ context.Context, text string) {
-	log2.Info("Noop telegram bot", log2.String("text", text))
+	log.Info("Noop telegram bot", log.String("text", text))
 }
