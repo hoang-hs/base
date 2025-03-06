@@ -3,27 +3,40 @@ stages:
   - deploy
 
 variables:
-    DOCKER_REGISTRY: docker.io
-    RELEASE_NAME: doan-api
+  RELEASE_NAME: test
+  DOCKER_REGISTRY: docker.io
+  DOCKER_IMAGE: $DOCKER_USERNAME/$RELEASE_NAME
+  IMAGE_TAG: latest
+  KUBECONFIG: $CI_PROJECT_DIR/kubeconfig  # Set KUBECONFIG environment variable
 
 build:
   stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
-    - sudo docker build . -t $DOCKER_IMAGE
-    - sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
-    - sudo docker push $DOCKER_IMAGE
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build . -t $DOCKER_IMAGE
+    - docker push $DOCKER_IMAGE
+    - docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
+    - docker tag $DOCKER_IMAGE:$IMAGE_TAG $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $DOCKER_IMAGE:$IMAGE_TAG
+    - docker push $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
   only:
-    - main
-  tags:
-    - h-runner
+    - master
 
 deploy:
-    stage: deploy
-    script:
-      - mkdir -p ~/.kube
-      - echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG
-      - helm upgrade --install $RELEASE_NAME ./helm-chart --set image.repository=$DOCKER_IMAGE
-    only:
-        - main
-    tags:
-        - h-runner
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [ "" ]
+  script:
+    - echo "Configuring kubectl..."
+    - echo "$KUBECONFIG_BASE64" | base64 -d > /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
+    - echo "Updating Kubernetes deployment..."
+    - kubectl apply -f ./deployment/app/deployment.yaml
+    - kubectl apply -f ./deployment/app/service.yaml
+    - kubectl apply -f ./deployment/app/ingress.yaml
+  only:
+    - master
