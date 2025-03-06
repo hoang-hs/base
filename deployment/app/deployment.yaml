@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: base
-          image: hoanghs120/base-amd64:latest
+          image: hoanghs120/base:latest
           ports:
             - containerPort: 8080
           env:

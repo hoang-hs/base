@@ -3,7 +3,7 @@ stages:
   - deploy
 
 variables:
-  RELEASE_NAME: test
+  RELEASE_NAME: base
   DOCKER_REGISTRY: docker.io
   DOCKER_IMAGE: $DOCKER_USERNAME/$RELEASE_NAME
   IMAGE_TAG: latest
@@ -16,8 +16,6 @@ build:
     - docker:dind
   script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - docker build . -t $DOCKER_IMAGE
-    - docker push $DOCKER_IMAGE
     - docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
     - docker tag $DOCKER_IMAGE:$IMAGE_TAG $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $DOCKER_IMAGE:$IMAGE_TAG
